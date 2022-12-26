@@ -1,6 +1,5 @@
 package me.iwareq.scoreboard;
 
-import cn.nukkit.plugin.PluginBase;
 import lombok.Getter;
 import me.iwareq.scoreboard.manager.ScoreboardManager;
 
@@ -12,9 +11,9 @@ public class ScoreboardAPI {
 	@Getter
 	private ScoreboardManager scoreboardManager;
 
-	public void onEnable() {
+	public void init() {
 		ScoreboardAPI.instance = this;
 
-		this.scoreboardManager = new ScoreboardManager();
+		scoreboardManager = new ScoreboardManager();
 	}
 }

@@ -3,6 +3,7 @@ package me.iwareq.scoreboard;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import lombok.Getter;
+import lombok.Setter;
 import me.iwareq.scoreboard.line.ScoreboardLine;
 import me.iwareq.scoreboard.manager.ScoreboardManager;
 import me.iwareq.scoreboard.packet.RemoveObjectivePacket;
@@ -21,8 +22,14 @@ import java.util.function.Consumer;
 
 public class Scoreboard {
 
-	private final String displayName;
-	private final DisplaySlot displaySlot;
+	@Setter
+	private String displayName;
+
+	@Setter
+	private DisplaySlot displaySlot;
+
+	@Setter
+	private SortOrder sortOrder;
 	private final ScoreboardManager manager;
 
 	@Getter
@@ -32,9 +39,26 @@ public class Scoreboard {
 	private Consumer<Player> consumer = (p) -> {};
 	private int lastIndex;
 
-	public Scoreboard(String displayName, DisplaySlot displaySlot, int updateTime) {
+	public Scoreboard() {
+		this("");
+	}
+
+	public Scoreboard(String displayName) {
+		this(displayName, DisplaySlot.SIDEBAR);
+	}
+
+	public Scoreboard(String displayName, DisplaySlot displaySlot) {
+		this(displayName, displaySlot, SortOrder.ASCENDING);
+	}
+
+	public Scoreboard(String displayName, DisplaySlot displaySlot, SortOrder sortOrder) {
+		this(displayName, displaySlot, sortOrder, 20);
+	}
+
+	public Scoreboard(String displayName, DisplaySlot displaySlot, SortOrder sortOrder, int updateTime) {
 		this.displayName = displayName;
 		this.displaySlot = displaySlot;
+		this.sortOrder = sortOrder;
 		this.manager = ScoreboardAPI.getInstance().getScoreboardManager();
 
 		Server.getInstance().getScheduler().scheduleRepeatingTask(new ScoreboardUpdater(this), updateTime, true);
@@ -45,7 +69,7 @@ public class Scoreboard {
 	}
 
 	public void setLine(int index, String text) {
-		this.checkLineIndex(index);
+		checkLineIndex(index);
 
 		this.lastIndex = index;
 
@@ -67,7 +91,7 @@ public class Scoreboard {
 		}
 	}
 
-	public void refresh() {
+	public void onUpdate() {
 		this.lines.clear();
 		this.lastIndex = 0;
 		this.viewers.removeIf(viewer -> {
@@ -99,7 +123,7 @@ public class Scoreboard {
 			objectivePacket.setDisplayName(this.displayName);
 			// dummy is the only criterion supported. As such, score can only be changed by commands.
 			objectivePacket.setCriteria("dummy");
-			objectivePacket.setSortOrder(SortOrder.ASCENDING);
+			objectivePacket.setSortOrder(sortOrder);
 
 			player.dataPacket(objectivePacket);
 

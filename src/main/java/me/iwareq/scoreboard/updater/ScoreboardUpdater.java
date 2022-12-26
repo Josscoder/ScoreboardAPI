@@ -11,6 +11,6 @@ public class ScoreboardUpdater extends Task {
 
 	@Override
 	public void onRun(int currentTick) {
-		this.scoreboard.refresh();
+		scoreboard.onUpdate();
 	}
 }
