@@ -4,7 +4,7 @@ import cn.nukkit.plugin.PluginBase;
 import lombok.Getter;
 import me.iwareq.scoreboard.manager.ScoreboardManager;
 
-public class ScoreboardAPI extends PluginBase {
+public class ScoreboardAPI {
 
 	@Getter
 	private static ScoreboardAPI instance;
@@ -12,7 +12,6 @@ public class ScoreboardAPI extends PluginBase {
 	@Getter
 	private ScoreboardManager scoreboardManager;
 
-	@Override
 	public void onEnable() {
 		ScoreboardAPI.instance = this;
 
